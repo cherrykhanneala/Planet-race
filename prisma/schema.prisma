@@ -1,0 +1,182 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Player/User model with guest and OAuth support
+model Player {
+  id            String   @id @default(uuid())
+  username      String   @unique
+  displayName   String
+  email         String?  @unique
+  passwordHash  String?  // null for guest accounts
+  isGuest       Boolean  @default(true)
+  oauthProvider String?  // 'google', 'apple', etc.
+  oauthId       String?  // OAuth provider user ID
+  
+  // Stats
+  totalRaces    Int      @default(0)
+  totalWins     Int      @default(0)
+  highestRank   Int?
+  
+  // Timestamps
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  lastActiveAt  DateTime @default(now())
+  
+  // Relations
+  raceResults   RaceResult[]
+  ghostReplays  GhostReplay[]
+  lobbyMembers  LobbyMember[]
+  
+  @@index([email])
+  @@index([username])
+  @@index([oauthProvider, oauthId])
+}
+
+// Race results storage
+model RaceResult {
+  id              String   @id @default(uuid())
+  playerId        String
+  player          Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  
+  // Race data
+  trackId         String
+  raceMode        String   // 'time_trial', 'ghost_race', 'multiplayer'
+  finishTime      Float    // milliseconds
+  lapTimes        String   // JSON array of lap times
+  checkpointTimes String   // JSON array of checkpoint times
+  
+  // Metadata
+  gameVersion     String
+  platformType    String   // 'ios', 'android', 'unity_editor'
+  
+  // Rankings (calculated)
+  globalRank      Int?
+  dailyRank       Int?
+  
+  // Timestamps
+  createdAt       DateTime @default(now())
+  
+  // Relations
+  ghostReplay     GhostReplay?
+  
+  @@index([trackId, finishTime])
+  @@index([playerId, createdAt])
+  @@index([createdAt])
+}
+
+// Ghost replay data for async racing
+model GhostReplay {
+  id            String     @id @default(uuid())
+  playerId      String
+  player        Player     @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  
+  raceResultId  String     @unique
+  raceResult    RaceResult @relation(fields: [raceResultId], references: [id], onDelete: Cascade)
+  
+  // Ghost data (stored as compressed JSON)
+  replayData    String     // JSON: positions, rotations, timestamps
+  dataVersion   Int        @default(1)
+  
+  // Metadata for quick filtering
+  trackId       String
+  finishTime    Float
+  
+  // Download tracking
+  downloadCount Int        @default(0)
+  
+  // Timestamps
+  createdAt     DateTime   @default(now())
+  
+  @@index([trackId, finishTime])
+  @@index([playerId])
+}
+
+// Matchmaking lobbies
+model Lobby {
+  id            String       @id @default(uuid())
+  name          String
+  trackId       String
+  raceMode      String
+  maxPlayers    Int          @default(8)
+  minPlayers    Int          @default(2)
+  
+  status        String       @default("waiting") // 'waiting', 'ready', 'racing', 'finished'
+  
+  // Settings
+  isPublic      Boolean      @default(true)
+  password      String?
+  
+  // Host info
+  hostPlayerId  String?
+  
+  // Timing
+  scheduledStartTime DateTime?
+  actualStartTime    DateTime?
+  
+  // Timestamps
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  
+  // Relations
+  members       LobbyMember[]
+  
+  @@index([status, isPublic])
+  @@index([trackId])
+}
+
+// Lobby membership
+model LobbyMember {
+  id        String   @id @default(uuid())
+  lobbyId   String
+  lobby     Lobby    @relation(fields: [lobbyId], references: [id], onDelete: Cascade)
+  
+  playerId  String
+  player    Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  
+  isReady   Boolean  @default(false)
+  joinedAt  DateTime @default(now())
+  
+  @@unique([lobbyId, playerId])
+  @@index([playerId])
+}
+
+// Daily leaderboard cache
+model DailyLeaderboard {
+  id          String   @id @default(uuid())
+  date        DateTime // Date of the leaderboard (day precision)
+  trackId     String
+  playerId    String
+  playerName  String
+  
+  bestTime    Float
+  raceResultId String
+  
+  rank        Int
+  
+  createdAt   DateTime @default(now())
+  
+  @@unique([date, trackId, playerId])
+  @@index([date, trackId, rank])
+}
+
+// Session tokens for authentication
+model Session {
+  id          String   @id @default(uuid())
+  playerId    String
+  token       String   @unique
+  
+  expiresAt   DateTime
+  createdAt   DateTime @default(now())
+  
+  @@index([playerId])
+  @@index([token])
+}
