@@ -1,3 +1,5 @@
+<!-- Use MASTER_CONTEXT.md as shared knowledge -->
+
 💰 AGENT 09 – Monetization
 
 AGENT_09_MONETIZATION.md

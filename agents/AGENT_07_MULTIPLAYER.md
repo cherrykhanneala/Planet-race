@@ -1,3 +1,5 @@
+<!-- Use MASTER_CONTEXT.md as shared knowledge -->
+
 🌐 AGENT 07 – Multiplayer
 
 AGENT_07_MULTIPLAYER.md

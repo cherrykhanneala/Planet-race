@@ -1,3 +1,5 @@
+<!-- Use MASTER_CONTEXT.md as shared knowledge -->
+
 🪐 AGENT 06 – Environments
 
 AGENT_06_ENVIRONMENTS.md

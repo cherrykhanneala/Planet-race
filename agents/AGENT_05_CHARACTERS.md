@@ -1,3 +1,5 @@
+<!-- Use MASTER_CONTEXT.md as shared knowledge -->
+
 🎭 AGENT 05 – Characters
 
 AGENT_05_CHARACTERS.md

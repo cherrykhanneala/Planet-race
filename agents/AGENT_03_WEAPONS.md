@@ -1,3 +1,5 @@
+<!-- Use MASTER_CONTEXT.md as shared knowledge -->
+
 🔫 AGENT 03 – Weapons & Balance
 
 AGENT_03_WEAPONS.md

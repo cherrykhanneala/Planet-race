@@ -1,3 +1,5 @@
+<!-- Use MASTER_CONTEXT.md as shared knowledge -->
+
 🎮 AGENT 02 – Core Gameplay
 
 AGENT_02_GAMEPLAY.md

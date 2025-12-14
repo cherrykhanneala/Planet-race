@@ -1,3 +1,5 @@
+<!-- Use MASTER_CONTEXT.md as shared knowledge -->
+
 🛠 AGENT 10 – Integration
 
 AGENT_10_INTEGRATION.md

@@ -1,3 +1,5 @@
+<!-- Use MASTER_CONTEXT.md as shared knowledge -->
+
 🚀 AGENT 04 – Vehicles
 
 AGENT_04_VEHICLES.md

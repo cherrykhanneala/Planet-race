@@ -1,3 +1,5 @@
+<!-- Use MASTER_CONTEXT.md as shared knowledge -->
+
 🔐 AGENT 08 – Anti-Cheat
 
 AGENT_08_ANTICHEAT.md

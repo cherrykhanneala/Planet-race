@@ -1,3 +1,5 @@
+<!-- Use MASTER_CONTEXT.md as shared knowledge -->
+
 🧠 AGENT 01 – Game Director
 
 AGENT_01_GAME_DIRECTOR.md
