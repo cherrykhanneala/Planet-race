@@ -54,6 +54,14 @@ Visit http://localhost:3000 to see the platform landing page and http://localhos
 
 ## 📚 Documentation
 
+### Game Design Documentation (NEW!)
+- **[🎮 Complete Game Design Docs](./docs/README.md)** - 100+ pages of production-ready game design
+  - 10 Agent deliverables covering all aspects of Planet Racers
+  - Gameplay mechanics, weapons, vehicles, characters, tracks
+  - Multiplayer architecture, monetization, API integration
+  - **Start here**: [Project Summary](./docs/00_PROJECT_SUMMARY.md)
+
+### Technical Documentation
 - **[DOCUMENTATION.md](./DOCUMENTATION.md)** - Complete user and developer guide
 - **[ARCHITECTURE.md](./ARCHITECTURE.md)** - System design and technical decisions
 - **[API Docs](http://localhost:3000/api/docs)** - Interactive API reference
