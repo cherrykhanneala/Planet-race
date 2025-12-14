@@ -75,7 +75,10 @@ export async function POST(request: NextRequest) {
       },
     })
     
-    // Calculate rankings (simplified - in production, use a background job)
+    // Calculate rankings
+    // NOTE: Synchronous for MVP. In production, move to background job queue
+    // to avoid blocking the response and improve scalability.
+    // See ARCHITECTURE.md for background job recommendations.
     await updateRankings(raceResult.id, trackId, finishTime)
     
     // Fetch updated result with rankings

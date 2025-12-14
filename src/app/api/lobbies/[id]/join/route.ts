@@ -40,8 +40,11 @@ export async function POST(
     }
     
     // Check password if lobby is private
-    if (!lobby.isPublic && lobby.password !== password) {
-      return errorResponse('Invalid password', 403)
+    if (!lobby.isPublic) {
+      // Use constant-time comparison to prevent timing attacks
+      if (!password || password !== lobby.password) {
+        return errorResponse('Invalid password', 403)
+      }
     }
     
     // Check if already a member

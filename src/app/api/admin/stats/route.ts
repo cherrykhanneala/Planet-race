@@ -1,10 +1,19 @@
 import { NextRequest } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { errorResponse, successResponse } from '@/lib/api-helpers'
+import { authenticateRequest, errorResponse, successResponse } from '@/lib/api-helpers'
 
 export async function GET(request: NextRequest) {
   try {
-    // Note: In production, add admin authentication here
+    // Authenticate admin - in production, check for admin role
+    const player = await authenticateRequest(request)
+    if (!player) {
+      return errorResponse('Authentication required', 401)
+    }
+    
+    // TODO: Add admin role check
+    // if (!player.isAdmin) {
+    //   return errorResponse('Admin access required', 403)
+    // }
     
     // Get overall statistics
     const [

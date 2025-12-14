@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { errorResponse, successResponse } from '@/lib/api-helpers'
+import { authenticateRequest, errorResponse, successResponse } from '@/lib/api-helpers'
 
 export async function GET(
   request: NextRequest,
@@ -60,7 +60,24 @@ export async function DELETE(
   try {
     const { id } = await params
     
-    // Note: In production, you'd want to verify the requester is the host
+    // Authenticate player
+    const player = await authenticateRequest(request)
+    if (!player) {
+      return errorResponse('Authentication required', 401)
+    }
+    
+    // Verify player is the host
+    const lobby = await prisma.lobby.findUnique({
+      where: { id },
+    })
+    
+    if (!lobby) {
+      return errorResponse('Lobby not found', 404)
+    }
+    
+    if (lobby.hostPlayerId !== player.id) {
+      return errorResponse('Only the host can delete the lobby', 403)
+    }
     
     await prisma.lobby.delete({
       where: { id },
