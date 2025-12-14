@@ -1,4 +1,5 @@
 import { NextRequest } from 'next/server'
+import { timingSafeEqual } from 'crypto'
 import { prisma } from '@/lib/prisma'
 import { authenticateRequest, errorResponse, successResponse } from '@/lib/api-helpers'
 
@@ -41,8 +42,23 @@ export async function POST(
     
     // Check password if lobby is private
     if (!lobby.isPublic) {
+      if (!password || !lobby.password) {
+        return errorResponse('Invalid password', 403)
+      }
       // Use constant-time comparison to prevent timing attacks
-      if (!password || password !== lobby.password) {
+      try {
+        const passwordBuffer = Buffer.from(password)
+        const lobbyPasswordBuffer = Buffer.from(lobby.password)
+        
+        // Ensure both buffers are same length for timingSafeEqual
+        if (passwordBuffer.length !== lobbyPasswordBuffer.length) {
+          return errorResponse('Invalid password', 403)
+        }
+        
+        if (!timingSafeEqual(passwordBuffer, lobbyPasswordBuffer)) {
+          return errorResponse('Invalid password', 403)
+        }
+      } catch (error) {
         return errorResponse('Invalid password', 403)
       }
     }

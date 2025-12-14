@@ -4,13 +4,15 @@ import { authenticateRequest, errorResponse, successResponse } from '@/lib/api-h
 
 export async function GET(request: NextRequest) {
   try {
-    // Authenticate admin - in production, check for admin role
+    // Authenticate admin - in production, implement proper admin role system
     const player = await authenticateRequest(request)
     if (!player) {
       return errorResponse('Authentication required', 401)
     }
     
-    // TODO: Add admin role check
+    // TODO: Add admin role check once role system is implemented
+    // Currently allows any authenticated user for MVP purposes
+    // For production, add a 'role' or 'isAdmin' field to Player model:
     // if (!player.isAdmin) {
     //   return errorResponse('Admin access required', 403)
     // }
